@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS listed_crops (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  crop_type VARCHAR(255) NOT NULL,
+  variety VARCHAR(255),
+  quantity DECIMAL NOT NULL,
+  price_per_kg DECIMAL NOT NULL,
+  harvest_date VARCHAR(255),
+  image_url VARCHAR(1000),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
