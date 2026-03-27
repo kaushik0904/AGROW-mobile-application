@@ -36,6 +36,18 @@ export const colors = {
   gray200: '#e5e7eb',
 };
 
+export const consumerColors = {
+  ...colors,
+  primary: '#ea580c',
+  primaryLight: '#f97316',
+  primaryDark: '#c2410c',
+  primary50: '#fff7ed',
+  primary100: '#ffedd5',
+  primary200: '#fed7aa',
+  accent: '#166534',
+  accentLight: '#22c55e',
+};
+
 export const fonts = {
   heading: 'Outfit_700Bold',
   headingSemiBold: 'Outfit_600SemiBold',

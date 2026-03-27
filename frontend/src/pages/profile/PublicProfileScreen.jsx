@@ -3,9 +3,9 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, ActivityIn
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../common/theme';
-import { useAuth } from '../context/AuthContext';
-import PostCard from '../components/PostCard';
+import { colors, fonts, shadows } from '../../common/theme';
+import { useAuth } from '../../context/AuthContext';
+import PostCard from '../../components/PostCard';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 

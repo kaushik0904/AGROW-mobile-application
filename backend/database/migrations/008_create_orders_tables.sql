@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  consumer_id INT REFERENCES users(id) ON DELETE CASCADE,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  status VARCHAR(50) DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INT REFERENCES orders(id) ON DELETE CASCADE,
+  crop_id INT REFERENCES listed_crops(id) ON DELETE SET NULL,
+  quantity DECIMAL(10, 2) NOT NULL,
+  price_at_purchase DECIMAL(10, 2) NOT NULL
+);

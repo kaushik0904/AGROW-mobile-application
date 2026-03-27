@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../common/theme';
-import { useAuth } from '../context/AuthContext';
-import * as ImagePicker from 'expo-image-picker';
+import { consumerColors, fonts, colors, shadows } from '../../../common/theme';
+import { useAuth } from '../../../context/AuthContext';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EditProfileScreen({ navigation, route }) {
+export default function EditConsumerProfileScreen({ navigation, route }) {
   const { userProfile } = route.params || {};
   const insets = useSafeAreaInsets();
-  const { token } = useAuth();
+  const { token, updateUser } = useAuth();
+  const themeColors = consumerColors;
 
   const [name, setName] = useState(userProfile?.name || '');
-  const [farmName, setFarmName] = useState(userProfile?.farm_name || '');
-  const [farmSize, setFarmSize] = useState(userProfile?.farm_size || '');
   const [location, setLocation] = useState(userProfile?.location || '');
-  const [profileImage, setProfileImage] = useState(userProfile?.profile_image || null);
-  
+  const profileImage = userProfile?.profile_image || null;
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
@@ -37,8 +34,8 @@ export default function EditProfileScreen({ navigation, route }) {
         },
         body: JSON.stringify({
           name: name.trim(),
-          farm_name: farmName.trim(),
-          farm_size: farmSize.trim(),
+          farm_name: '',
+          farm_size: '',
           location: location.trim(),
           profile_image: profileImage
         })
@@ -46,6 +43,7 @@ export default function EditProfileScreen({ navigation, route }) {
 
       const data = await response.json();
       if (response.ok) {
+        updateUser({ name: name.trim() });
         Alert.alert('Success', 'Profile updated successfully', [
           { text: 'OK', onPress: () => navigation.goBack() }
         ]);
@@ -87,40 +85,19 @@ export default function EditProfileScreen({ navigation, route }) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Farm Name</Text>
+          <Text style={styles.label}>Delivery Address</Text>
           <TextInput
-            style={styles.input}
-            value={farmName}
-            onChangeText={setFarmName}
-            placeholder="e.g. Green Valley Farms"
-            placeholderTextColor={colors.textSecondary}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Farm Size</Text>
-          <TextInput
-            style={styles.input}
-            value={farmSize}
-            onChangeText={setFarmSize}
-            placeholder="e.g. 12 acres, 5 hectares"
-            placeholderTextColor={colors.textSecondary}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Location</Text>
-          <TextInput
-            style={styles.input}
+            style={[styles.input, { minHeight: 80, textAlignVertical: 'top' }]}
             value={location}
             onChangeText={setLocation}
-            placeholder="e.g. Nashik, Maharashtra"
+            multiline={true}
+            placeholder="Enter full delivery address"
             placeholderTextColor={colors.textSecondary}
           />
         </View>
 
         <TouchableOpacity 
-          style={[styles.saveBtn, shadows.soft]} 
+          style={[styles.saveBtn, { backgroundColor: themeColors.primary }, shadows.soft]} 
           onPress={handleSave} 
           disabled={isSaving}
           activeOpacity={0.8}
@@ -131,68 +108,20 @@ export default function EditProfileScreen({ navigation, route }) {
             <Text style={styles.saveBtnText}>Save Changes</Text>
           )}
         </TouchableOpacity>
-
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.surface,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-    backgroundColor: colors.white,
-  },
-  backBtn: {
-    padding: 4,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: fonts.headingSemiBold,
-    color: colors.textPrimary,
-  },
-  formContainer: {
-    padding: 24,
-  },
-  inputGroup: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontFamily: fonts.bodyMedium,
-    color: colors.textSecondary,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    fontFamily: fonts.body,
-    color: colors.textPrimary,
-  },
-  saveBtn: {
-    backgroundColor: colors.primary,
-    borderRadius: 16,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  saveBtnText: {
-    color: colors.white,
-    fontSize: 16,
-    fontFamily: fonts.bodySemiBold,
-  },
+  screen: { flex: 1, backgroundColor: colors.surface },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: colors.borderLight, backgroundColor: colors.white },
+  backBtn: { padding: 4 },
+  headerTitle: { fontSize: 18, fontFamily: fonts.headingSemiBold, color: colors.textPrimary },
+  formContainer: { padding: 24 },
+  inputGroup: { marginBottom: 20 },
+  label: { fontSize: 14, fontFamily: fonts.bodyMedium, color: colors.textSecondary, marginBottom: 8 },
+  input: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.borderLight, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, fontSize: 16, fontFamily: fonts.body, color: colors.textPrimary },
+  saveBtn: { borderRadius: 16, paddingVertical: 16, alignItems: 'center', marginTop: 10 },
+  saveBtnText: { color: colors.white, fontSize: 16, fontFamily: fonts.bodySemiBold },
 });

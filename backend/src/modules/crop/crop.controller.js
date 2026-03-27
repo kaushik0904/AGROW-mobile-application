@@ -2,21 +2,21 @@ const { pool } = require('../../core/database/connection');
 
 const createCrop = async (req, res) => {
   try {
-    const { crop_type, variety, quantity, price_per_kg, harvest_date, image_url } = req.body;
+    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url } = req.body;
     
     // Assume req.user is populated by the auth middleware
     const farmer_id = req.user.id;
 
-    if (!crop_type || !quantity || !price_per_kg) {
-      return res.status(400).json({ error: 'Crop type, quantity, and price are required' });
+    if (!crop_type || !category || !quantity || !price_per_kg) {
+      return res.status(400).json({ error: 'Crop type, category, quantity, and price are required' });
     }
 
     const insertResult = await pool.query(
       `INSERT INTO listed_crops 
-       (farmer_id, crop_type, variety, quantity, price_per_kg, harvest_date, image_url) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+       (farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
        RETURNING *`,
-      [farmer_id, crop_type, variety, quantity, price_per_kg, harvest_date, image_url]
+      [farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url]
     );
 
     res.status(201).json({
@@ -56,18 +56,18 @@ const updateCrop = async (req, res) => {
   try {
     const { id } = req.params;
     const farmer_id = req.user.id;
-    const { crop_type, variety, quantity, price_per_kg, harvest_date, image_url } = req.body;
+    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url } = req.body;
 
-    if (!crop_type || !quantity || !price_per_kg) {
-      return res.status(400).json({ error: 'Crop type, quantity, and price are required' });
+    if (!crop_type || !category || !quantity || !price_per_kg) {
+      return res.status(400).json({ error: 'Crop type, category, quantity, and price are required' });
     }
 
     const updateResult = await pool.query(
       `UPDATE listed_crops 
-       SET crop_type = $1, variety = $2, quantity = $3, price_per_kg = $4, harvest_date = $5, image_url = $6
-       WHERE id = $7 AND farmer_id = $8 AND status = 'active'
+       SET crop_type = $1, variety = $2, category = $3, quantity = $4, price_per_kg = $5, harvest_date = $6, image_url = $7
+       WHERE id = $8 AND farmer_id = $9 AND status = 'active'
        RETURNING *`,
-      [crop_type, variety, quantity, price_per_kg, harvest_date, image_url, id, farmer_id]
+      [crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, id, farmer_id]
     );
 
     if (updateResult.rows.length === 0) {

@@ -1,21 +1,24 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../common/theme';
+import { colors, consumerColors, fonts, shadows } from '../common/theme';
+import { useAuth } from '../context/AuthContext';
 
 export default function CropCard({ crop, onEdit, onRemove, isOwner }) {
+  const { user } = useAuth();
+  const themeColors = user?.category === 'consumer' ? consumerColors : colors;
   return (
     <View style={[styles.container, shadows.soft]}>
       <View style={styles.row}>
-        <View style={styles.imageWrapper}>
+        <View style={[styles.imageWrapper, { borderColor: themeColors.primary100 }]}>
           <Image source={{ uri: crop.image_url || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200&q=80' }} style={styles.image} />
         </View>
         <View style={styles.info}>
-          <Text style={styles.name}>{crop.variety ? `${crop.variety} ${crop.crop_type}` : crop.crop_type}</Text>
-          <Text style={styles.farmer}>By: {crop.farmer_name}</Text>
+          <Text style={[styles.name, { color: themeColors.primaryDark }]}>{crop.variety ? `${crop.variety} ${crop.crop_type}` : crop.crop_type}</Text>
+          <Text style={[styles.farmer, { color: themeColors.primary }]}>By: {crop.farmer_name}</Text>
           <Text style={styles.detail}>
             Listed: <Text style={styles.bold}>{crop.quantity} kg</Text> |{' '}
-            <Text style={styles.price}>₹{crop.price_per_kg}/kg</Text>
+            <Text style={[styles.price, { color: themeColors.primary }]}>₹{crop.price_per_kg}/kg</Text>
           </Text>
           <View style={styles.expiryRow}>
             <Ionicons name="calendar-outline" size={12} color={colors.textMuted} />

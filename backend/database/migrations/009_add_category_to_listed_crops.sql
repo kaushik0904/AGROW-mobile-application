@@ -1,0 +1,2 @@
+ALTER TABLE listed_crops
+ADD COLUMN IF NOT EXISTS category VARCHAR(50);

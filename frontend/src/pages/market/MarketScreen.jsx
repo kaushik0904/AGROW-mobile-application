@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Platform, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../common/theme';
-import { useAuth } from '../context/AuthContext';
-import WeatherWidget from '../components/WeatherWidget';
-import CropCard from '../components/CropCard';
-import Button from '../components/Button';
+import { colors, fonts, shadows } from '../../common/theme';
+import { useAuth } from '../../context/AuthContext';
+import WeatherWidget from '../../components/WeatherWidget';
+import CropCard from '../../components/CropCard';
+import Button from '../../components/Button';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -19,6 +19,7 @@ export default function MarketScreen() {
 
   // Form State
   const [cropType, setCropType] = useState('');
+  const [category, setCategory] = useState('Vegetables');
   const [variety, setVariety] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
@@ -71,8 +72,8 @@ export default function MarketScreen() {
   };
 
   const handleListCrop = async () => {
-    if (!cropType || !quantity || !price) {
-      Alert.alert('Error', 'Please fill in Crop Type, Quantity, and Price');
+    if (!cropType || !category || !quantity || !price) {
+      Alert.alert('Error', 'Please fill in Crop Type, Category, Quantity, and Price');
       return;
     }
 
@@ -92,6 +93,7 @@ export default function MarketScreen() {
         },
         body: JSON.stringify({
           crop_type: cropType,
+          category,
           variety,
           quantity: parseFloat(quantity),
           price_per_kg: parseFloat(price),
@@ -106,6 +108,7 @@ export default function MarketScreen() {
         // Reset form
         setEditingCropId(null);
         setCropType('');
+        setCategory('Vegetables');
         setVariety('');
         setQuantity('');
         setPrice('');
@@ -129,6 +132,7 @@ export default function MarketScreen() {
   const handleEdit = (crop) => {
     setEditingCropId(crop.id);
     setCropType(crop.crop_type);
+    setCategory(crop.category || 'Vegetables');
     setVariety(crop.variety || '');
     setQuantity(crop.quantity.toString());
     setPrice(crop.price_per_kg.toString());
@@ -219,6 +223,7 @@ export default function MarketScreen() {
               if (editingCropId) {
                  setEditingCropId(null);
                  setCropType('');
+                 setCategory('Vegetables');
                  setVariety('');
                  setQuantity('');
                  setPrice('');
@@ -258,6 +263,23 @@ export default function MarketScreen() {
       ) : (
         <View style={styles.formSection}>
           <View style={[styles.formCard, shadows.card]}>
+            {/* Category Selection */}
+            <View style={styles.field}>
+              <Text style={styles.label}>CATEGORY *</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+                {['Vegetables', 'Fruits', 'Grains', 'Dairy'].map((cat) => (
+                  <TouchableOpacity
+                    key={cat}
+                    onPress={() => setCategory(cat)}
+                    activeOpacity={0.8}
+                    style={[styles.categoryChip, category === cat && styles.categoryChipActive]}
+                  >
+                    <Text style={[styles.categoryChipText, category === cat && styles.categoryChipTextActive]}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
             {/* Crop Type */}
             <View style={styles.field}>
               <Text style={styles.label}>CROP TYPE *</Text>
@@ -446,4 +468,8 @@ const styles = StyleSheet.create({
   },
   uploadText: { fontSize: 14, fontFamily: fonts.bodyMedium, color: colors.primary },
   uploadHint: { fontSize: 10, color: colors.textMuted, marginTop: 4 },
+  categoryChip: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, backgroundColor: colors.surfaceWarm, borderWidth: 1, borderColor: colors.border },
+  categoryChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  categoryChipText: { fontSize: 13, fontFamily: fonts.bodyMedium, color: colors.textSecondary },
+  categoryChipTextActive: { color: colors.white },
 });

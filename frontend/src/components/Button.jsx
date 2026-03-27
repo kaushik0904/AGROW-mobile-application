@@ -1,14 +1,18 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors, fonts } from '../common/theme';
+import { colors, consumerColors, fonts } from '../common/theme';
+import { useAuth } from '../context/AuthContext';
 
 export default function Button({ children, variant = 'primary', onPress, style, textStyle, icon }) {
+  const { user } = useAuth();
+  const themeColors = user?.category === 'consumer' ? consumerColors : colors;
+
   if (variant === 'primary') {
     return (
       <TouchableOpacity onPress={onPress} activeOpacity={0.85} style={[styles.wrapper, style]}>
         <LinearGradient
-          colors={[colors.primary, colors.primaryDark]}
+          colors={[themeColors.primary, themeColors.primaryDark]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.gradient}
@@ -21,10 +25,10 @@ export default function Button({ children, variant = 'primary', onPress, style, 
   }
 
   const variantStyles = {
-    secondary: { bg: colors.primary50, text: colors.primary },
-    outline: { bg: 'transparent', text: colors.primary, border: colors.primary },
-    danger: { bg: colors.red50, text: colors.danger },
-    ghost: { bg: 'transparent', text: colors.textSecondary },
+    secondary: { bg: themeColors.primary50, text: themeColors.primary },
+    outline: { bg: 'transparent', text: themeColors.primary, border: themeColors.primary },
+    danger: { bg: themeColors.red50, text: themeColors.danger },
+    ghost: { bg: 'transparent', text: themeColors.textSecondary },
   };
 
   const v = variantStyles[variant] || variantStyles.ghost;

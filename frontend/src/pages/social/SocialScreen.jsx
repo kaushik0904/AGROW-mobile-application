@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, ActivityIndicator, RefreshControl, Modal, TextInput, KeyboardAvoidingView, Platform, Alert, ActionSheetIOS } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts } from '../common/theme';
-import { useAuth } from '../context/AuthContext';
+import { colors, fonts } from '../../common/theme';
+import { useAuth } from '../../context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
-import PostCard from '../components/PostCard';
+import PostCard from '../../components/PostCard';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
