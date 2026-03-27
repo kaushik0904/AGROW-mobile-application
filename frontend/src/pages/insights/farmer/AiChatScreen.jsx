@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../../common/theme';
+import { colors, fonts, shadows } from '../../../common/theme';
 
 export default function AiChatScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();

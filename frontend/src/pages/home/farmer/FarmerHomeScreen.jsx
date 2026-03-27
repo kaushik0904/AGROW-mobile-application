@@ -3,9 +3,9 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../../common/theme';
-import WeatherWidget from '../../components/WeatherWidget';
-import { useAuth } from '../../context/AuthContext';
+import { colors, fonts, shadows } from '../../../common/theme';
+import WeatherWidget from '../../../components/WeatherWidget';
+import { useAuth } from '../../../context/AuthContext';
 
 const quickStats = [
   { label: 'Active Listings', value: '3', icon: 'basket-outline', gradient: ['#22c55e', '#166534'] },

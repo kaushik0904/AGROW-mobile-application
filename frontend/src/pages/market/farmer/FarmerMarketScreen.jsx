@@ -2,11 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Platform, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, shadows } from '../../common/theme';
-import { useAuth } from '../../context/AuthContext';
-import WeatherWidget from '../../components/WeatherWidget';
-import CropCard from '../../components/CropCard';
-import Button from '../../components/Button';
+import { colors, fonts, shadows } from '../../../common/theme';
+import { useAuth } from '../../../context/AuthContext';
+import WeatherWidget from '../../../components/WeatherWidget';
+import CropCard from '../../../components/CropCard';
+import Button from '../../../components/Button';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;

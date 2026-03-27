@@ -3,8 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { colors, fonts, shadows } from '../../common/theme';
-import AiAlertBanner from '../../components/AiAlertBanner';
+import { colors, fonts, shadows } from '../../../common/theme';
+import AiAlertBanner from '../../../components/AiAlertBanner';
 
 const priceData = [
   { month: 'Jul', value: 65 },

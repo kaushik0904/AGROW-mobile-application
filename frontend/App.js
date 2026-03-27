@@ -9,10 +9,10 @@ import { useFonts, Outfit_500Medium, Outfit_600SemiBold, Outfit_700Bold } from '
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 
-import HomeScreen from './src/pages/home/HomeScreen';
-import MarketScreen from './src/pages/market/MarketScreen';
-import SocialScreen from './src/pages/social/SocialScreen';
-import InsightsScreen from './src/pages/insights/InsightsScreen';
+import FarmerHomeScreen from './src/pages/home/farmer/FarmerHomeScreen';
+import FarmerMarketScreen from './src/pages/market/farmer/FarmerMarketScreen';
+import FarmerSocialScreen from './src/pages/social/farmer/FarmerSocialScreen';
+import FarmerInsightsScreen from './src/pages/insights/farmer/FarmerInsightsScreen';
 import FarmerProfileScreen from './src/pages/profile/farmer/FarmerProfileScreen';
 
 import LoginScreen from './src/pages/auth/LoginScreen';
@@ -76,19 +76,19 @@ function FarmerTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Market" component={MarketScreen} />
-      <Tab.Screen name="Social" component={SocialScreen} />
-      <Tab.Screen name="Insights" component={InsightsScreen} />
+      <Tab.Screen name="Home" component={FarmerHomeScreen} />
+      <Tab.Screen name="Market" component={FarmerMarketScreen} />
+      <Tab.Screen name="Social" component={FarmerSocialScreen} />
+      <Tab.Screen name="Insights" component={FarmerInsightsScreen} />
       <Tab.Screen name="Profile" component={FarmerProfileScreen} />
     </Tab.Navigator>
   );
 }
 
-import ConsumerHomeScreen from './src/pages/home/ConsumerHomeScreen';
-import ConsumerMarketScreen from './src/pages/market/ConsumerMarketScreen';
+import ConsumerHomeScreen from './src/pages/home/consumer/ConsumerHomeScreen';
+import ConsumerMarketScreen from './src/pages/market/consumer/ConsumerMarketScreen';
 import ConsumerProfileScreen from './src/pages/profile/consumer/ConsumerProfileScreen';
-import CartScreen from './src/pages/market/CartScreen';
+import CartScreen from './src/pages/market/consumer/CartScreen';
 
 function ConsumerTabs() {
   const insets = useSafeAreaInsets();
@@ -157,8 +157,8 @@ function AuthStack() {
 import EditConsumerProfileScreen from './src/pages/profile/consumer/EditConsumerProfileScreen';
 import EditFarmerProfileScreen from './src/pages/profile/farmer/EditFarmerProfileScreen';
 import PublicProfileScreen from './src/pages/profile/PublicProfileScreen';
-import AiChatScreen from './src/pages/insights/AiChatScreen';
-import ProductDetailsScreen from './src/pages/market/ProductDetailsScreen';
+import AiChatScreen from './src/pages/insights/farmer/AiChatScreen';
+import ProductDetailsScreen from './src/pages/market/consumer/ProductDetailsScreen';
 
 const RootStackNav = createNativeStackNavigator();
 

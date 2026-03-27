@@ -3,10 +3,10 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Alert, Act
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, consumerColors, fonts, shadows } from '../../common/theme';
-import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
-import Button from '../../components/Button';
+import { colors, consumerColors, fonts, shadows } from '../../../common/theme';
+import { useAuth } from '../../../context/AuthContext';
+import { useCart } from '../../../context/CartContext';
+import Button from '../../../components/Button';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 

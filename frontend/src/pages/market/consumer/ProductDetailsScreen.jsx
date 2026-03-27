@@ -3,9 +3,9 @@ import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, Alert } fr
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, consumerColors, fonts, shadows } from '../../common/theme';
-import { useCart } from '../../context/CartContext';
-import Button from '../../components/Button';
+import { colors, consumerColors, fonts, shadows } from '../../../common/theme';
+import { useCart } from '../../../context/CartContext';
+import Button from '../../../components/Button';
 
 export default function ProductDetailsScreen() {
   const route = useRoute();

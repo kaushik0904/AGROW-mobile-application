@@ -3,8 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, consumerColors, fonts, shadows } from '../../common/theme';
-import { useAuth } from '../../context/AuthContext';
+import { colors, consumerColors, fonts, shadows } from '../../../common/theme';
+import { useAuth } from '../../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 const categories = [
