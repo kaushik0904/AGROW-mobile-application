@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Platform, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Platform, RefreshControl, Switch } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts, shadows } from '../../../common/theme';
@@ -16,6 +16,8 @@ export default function MarketScreen() {
   const [crops, setCrops] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
   // Form State
   const [cropType, setCropType] = useState('');
@@ -27,7 +29,12 @@ export default function MarketScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateValue, setDateValue] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
+  // Group Buy (Hub) State
+  const [isHubEnabled, setIsHubEnabled] = useState(false);
+  const [hubTargetKg, setHubTargetKg] = useState('');
+  const [hubDiscountPercentage, setHubDiscountPercentage] = useState('');
+
   // Edit State
   const [editingCropId, setEditingCropId] = useState(null);
 
@@ -66,9 +73,36 @@ export default function MarketScreen() {
     fetchCrops();
   }, [fetchCrops]);
 
+  const fetchOrders = useCallback(async () => {
+    try {
+      setIsLoadingOrders(true);
+      const response = await fetch(`${API_URL}/orders/farmer`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setOrders(data.orders || []);
+      }
+    } catch (error) {
+      console.error('Error fetching farmer orders:', error);
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab, fetchOrders]);
+
   const onRefresh = () => {
     setIsRefreshing(true);
-    fetchCrops();
+    if (activeTab === 'orders') {
+      fetchOrders().then(() => setIsRefreshing(false));
+    } else {
+      fetchCrops();
+    }
   };
 
   const handleListCrop = async () => {
@@ -79,10 +113,10 @@ export default function MarketScreen() {
 
     setIsSubmitting(true);
     try {
-      const url = editingCropId 
-        ? `${API_URL}/crops/${editingCropId}` 
+      const url = editingCropId
+        ? `${API_URL}/crops/${editingCropId}`
         : `${API_URL}/crops`;
-        
+
       const method = editingCropId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -97,7 +131,10 @@ export default function MarketScreen() {
           variety,
           quantity: parseFloat(quantity),
           price_per_kg: parseFloat(price),
-          harvest_date: harvestDate
+          harvest_date: harvestDate,
+          is_hub_enabled: isHubEnabled,
+          hub_target_kg: isHubEnabled && hubTargetKg ? parseFloat(hubTargetKg) : 0,
+          hub_discount_percentage: isHubEnabled && hubDiscountPercentage ? parseInt(hubDiscountPercentage, 10) : 0
         })
       });
 
@@ -114,6 +151,9 @@ export default function MarketScreen() {
         setPrice('');
         setHarvestDate('');
         setDateValue(new Date());
+        setIsHubEnabled(false);
+        setHubTargetKg('');
+        setHubDiscountPercentage('');
 
         // Refresh listings and switch tab
         fetchCrops();
@@ -146,8 +186,12 @@ export default function MarketScreen() {
           setDateValue(parsedDate);
         }
       }
-    } catch (e) {}
-    
+    } catch (e) { }
+
+    setIsHubEnabled(crop.is_hub_enabled || false);
+    setHubTargetKg(crop.hub_target_kg ? crop.hub_target_kg.toString() : '');
+    setHubDiscountPercentage(crop.hub_discount_percentage ? crop.hub_discount_percentage.toString() : '');
+
     setActiveTab('new');
   };
 
@@ -157,8 +201,8 @@ export default function MarketScreen() {
       'Are you sure you want to remove this crop from the market?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Remove', 
+        {
+          text: 'Remove',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -168,7 +212,7 @@ export default function MarketScreen() {
                   'Authorization': `Bearer ${token}`
                 }
               });
-              
+
               if (response.ok) {
                 Alert.alert('Success', 'Listing removed successfully');
                 fetchCrops();
@@ -197,10 +241,10 @@ export default function MarketScreen() {
     >
       <View style={styles.header}>
         <Text style={styles.title}>
-          {activeTab === 'listings' 
-            ? 'My Listings' 
-            : editingCropId 
-              ? 'Edit Crop Listing' 
+          {activeTab === 'listings'
+            ? 'My Listings'
+            : editingCropId
+              ? 'Edit Crop Listing'
               : 'List New Crop'}
         </Text>
       </View>
@@ -215,20 +259,23 @@ export default function MarketScreen() {
             style={[styles.tab, activeTab === 'listings' && styles.tabActive]}
             activeOpacity={0.8}
           >
-            <Text style={[styles.tabText, activeTab === 'listings' && styles.tabTextActive]}>📦 Current Listings</Text>
+            <Text style={[styles.tabText, activeTab === 'listings' && styles.tabTextActive]}>📦 Listings</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               // If switching to "New Crop" tab from "Listings", clear editing state so form is fresh
               if (editingCropId) {
-                 setEditingCropId(null);
-                 setCropType('');
-                 setCategory('Vegetables');
-                 setVariety('');
-                 setQuantity('');
-                 setPrice('');
-                 setHarvestDate('');
-                 setDateValue(new Date());
+                setEditingCropId(null);
+                setCropType('');
+                setCategory('Vegetables');
+                setVariety('');
+                setQuantity('');
+                setPrice('');
+                setHarvestDate('');
+                setDateValue(new Date());
+                setIsHubEnabled(false);
+                setHubTargetKg('');
+                setHubDiscountPercentage('');
               }
               setActiveTab('new');
             }}
@@ -236,8 +283,15 @@ export default function MarketScreen() {
             activeOpacity={0.8}
           >
             <Text style={[styles.tabText, activeTab === 'new' && styles.tabTextActive]}>
-              {editingCropId ? '✏️ Edit Crop' : '➕ List New Crop'}
+              {editingCropId ? '✏️ Edit Crop' : '➕ List New'}
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setActiveTab('orders')}
+            style={[styles.tab, activeTab === 'orders' && styles.tabActive]}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.tabText, activeTab === 'orders' && styles.tabTextActive]}>📋 Orders</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -250,9 +304,9 @@ export default function MarketScreen() {
             <Text style={styles.emptyText}>No crops listed currently.</Text>
           ) : (
             crops.map((crop) => (
-              <CropCard 
-                key={crop.id} 
-                crop={crop} 
+              <CropCard
+                key={crop.id}
+                crop={crop}
                 isOwner={currentUserId === crop.farmer_id}
                 onEdit={() => handleEdit(crop)}
                 onRemove={() => handleRemove(crop.id)}
@@ -260,7 +314,7 @@ export default function MarketScreen() {
             ))
           )}
         </View>
-      ) : (
+      ) : activeTab === 'new' ? (
         <View style={styles.formSection}>
           <View style={[styles.formCard, shadows.card]}>
             {/* Category Selection */}
@@ -362,6 +416,48 @@ export default function MarketScreen() {
               )}
             </View>
 
+            <View style={styles.divider} />
+            
+            {/* Group Buying Options */}
+            <View style={styles.field}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <Text style={styles.label}>ENABLE GROUP BUYING HUB</Text>
+                <Switch
+                  value={isHubEnabled}
+                  onValueChange={setIsHubEnabled}
+                  trackColor={{ false: colors.borderLight, true: colors.primary }}
+                />
+              </View>
+              {isHubEnabled && (
+                <View style={[styles.gridRow, { marginTop: 10 }]}>
+                  <View style={styles.gridItem}>
+                    <Text style={styles.gridLabel}>Hub Target (kg) *</Text>
+                    <TextInput
+                      style={styles.gridInput}
+                      placeholder="e.g. 100"
+                      keyboardType="numeric"
+                      value={hubTargetKg}
+                      onChangeText={setHubTargetKg}
+                      placeholderTextColor={colors.textMuted}
+                    />
+                  </View>
+                  <View style={styles.gridItem}>
+                    <Text style={styles.gridLabel}>Discount (%) *</Text>
+                    <TextInput
+                      style={styles.gridInput}
+                      placeholder="e.g. 15"
+                      keyboardType="numeric"
+                      value={hubDiscountPercentage}
+                      onChangeText={setHubDiscountPercentage}
+                      placeholderTextColor={colors.textMuted}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
+
+            <View style={styles.divider} />
+
             {/* Upload */}
             <TouchableOpacity style={styles.uploadArea} activeOpacity={0.7}>
               <View style={styles.uploadIcon}>
@@ -380,6 +476,43 @@ export default function MarketScreen() {
               {isSubmitting ? (editingCropId ? 'Saving...' : 'Publishing...') : (editingCropId ? 'Save Changes' : 'Publish Listing')}
             </Button>
           </View>
+        </View>
+      ) : (
+        <View style={styles.listSection}>
+          {isLoadingOrders ? (
+            <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />
+          ) : orders.length === 0 ? (
+            <Text style={styles.emptyText}>No orders received yet.</Text>
+          ) : (
+            orders.map((order) => (
+              <View key={order.id} style={[styles.formCard, shadows.card, { marginBottom: 16 }]}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <Text style={{ fontFamily: fonts.headingSemiBold, color: colors.primaryDark }}>Order #{order.id}</Text>
+                  <Text style={{ fontSize: 12, color: colors.textMuted }}>
+                    {new Date(order.created_at).toLocaleDateString()}
+                  </Text>
+                </View>
+                <Text style={{ fontFamily: fonts.bodyMedium, color: colors.textPrimary, marginBottom: 4 }}>
+                  Buyer: {order.consumer_name}
+                </Text>
+                <Text style={{ fontFamily: fonts.bodyMedium, color: colors.textPrimary, marginBottom: 12 }}>
+                  Phone: {order.consumer_phone}
+                </Text>
+                <View style={{ gap: 8, borderTopWidth: 1, borderColor: colors.borderLight, paddingTop: 12 }}>
+                  {order.items.map((item, idx) => (
+                    <View key={idx} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Text style={{ fontFamily: fonts.bodyMedium, color: colors.textSecondary }}>
+                        {item.quantity}x {item.variety ? `${item.variety} ` : ''}{item.crop_type}
+                      </Text>
+                      <Text style={{ fontFamily: fonts.bodySemiBold, color: colors.textPrimary }}>
+                        ₹{item.price_at_purchase * item.quantity}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ))
+          )}
         </View>
       )}
     </ScrollView>
@@ -472,4 +605,5 @@ const styles = StyleSheet.create({
   categoryChipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   categoryChipText: { fontSize: 13, fontFamily: fonts.bodyMedium, color: colors.textSecondary },
   categoryChipTextActive: { color: colors.white },
+  divider: { height: 1, backgroundColor: colors.borderLight, marginVertical: 16 },
 });

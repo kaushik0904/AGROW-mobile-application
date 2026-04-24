@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts, shadows } from '../../../common/theme';
 
-export default function SettingsList({ items, toggles, onToggle, themeColors }) {
+export default function SettingsList({ items, toggles, onToggle, themeColors, onPressItem }) {
   return (
     <View style={styles.settingsSection}>
       <Text style={styles.sectionTitle}>ACCOUNT SETTINGS</Text>
@@ -14,6 +14,7 @@ export default function SettingsList({ items, toggles, onToggle, themeColors }) 
               style={styles.settingRow} 
               activeOpacity={0.7} 
               disabled={item.type !== 'link'}
+              onPress={() => item.type === 'link' && onPressItem && onPressItem(item.key)}
             >
               <View style={styles.settingLeft}>
                 <View style={[styles.settingIcon, { backgroundColor: themeColors.primary50 }]}>

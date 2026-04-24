@@ -2,7 +2,7 @@ const { pool } = require('../../core/database/connection');
 
 const createCrop = async (req, res) => {
   try {
-    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url } = req.body;
+    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, is_hub_enabled, hub_target_kg, hub_discount_percentage } = req.body;
     
     // Assume req.user is populated by the auth middleware
     const farmer_id = req.user.id;
@@ -13,10 +13,10 @@ const createCrop = async (req, res) => {
 
     const insertResult = await pool.query(
       `INSERT INTO listed_crops 
-       (farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+       (farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, is_hub_enabled, hub_target_kg, hub_discount_percentage) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
        RETURNING *`,
-      [farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url]
+      [farmer_id, crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, is_hub_enabled || false, hub_target_kg || 0, hub_discount_percentage || 0]
     );
 
     res.status(201).json({
@@ -56,7 +56,7 @@ const updateCrop = async (req, res) => {
   try {
     const { id } = req.params;
     const farmer_id = req.user.id;
-    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url } = req.body;
+    const { crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, is_hub_enabled, hub_target_kg, hub_discount_percentage } = req.body;
 
     if (!crop_type || !category || !quantity || !price_per_kg) {
       return res.status(400).json({ error: 'Crop type, category, quantity, and price are required' });
@@ -64,10 +64,10 @@ const updateCrop = async (req, res) => {
 
     const updateResult = await pool.query(
       `UPDATE listed_crops 
-       SET crop_type = $1, variety = $2, category = $3, quantity = $4, price_per_kg = $5, harvest_date = $6, image_url = $7
-       WHERE id = $8 AND farmer_id = $9 AND status = 'active'
+       SET crop_type = $1, variety = $2, category = $3, quantity = $4, price_per_kg = $5, harvest_date = $6, image_url = $7, is_hub_enabled = $8, hub_target_kg = $9, hub_discount_percentage = $10
+       WHERE id = $11 AND farmer_id = $12 AND status = 'active'
        RETURNING *`,
-      [crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, id, farmer_id]
+      [crop_type, variety, category, quantity, price_per_kg, harvest_date, image_url, is_hub_enabled || false, hub_target_kg || 0, hub_discount_percentage || 0, id, farmer_id]
     );
 
     if (updateResult.rows.length === 0) {

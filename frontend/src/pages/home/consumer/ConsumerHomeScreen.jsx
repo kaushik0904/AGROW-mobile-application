@@ -23,7 +23,7 @@ export default function ConsumerHomeScreen() {
     <ScrollView style={styles.screen} contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top }]} showsVerticalScrollIndicator={false}>
       {/* Welcome */}
       <View style={styles.section}>
-        <Text style={styles.greeting}>Good Morning,</Text>
+        <Text style={styles.greeting}>Welcome,</Text>
         <Text style={styles.name}>{user?.name ?? 'Guest'} </Text>
       </View>
 
@@ -34,9 +34,9 @@ export default function ConsumerHomeScreen() {
         </View>
         <View style={styles.categoriesRow}>
           {categories.map((cat) => (
-            <TouchableOpacity 
-              key={cat.id} 
-              style={styles.categoryCard} 
+            <TouchableOpacity
+              key={cat.id}
+              style={styles.categoryCard}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Market', { category: cat.name })}
             >
@@ -66,8 +66,8 @@ export default function ConsumerHomeScreen() {
             </View>
             <Text style={styles.bannerTitle}>Farm to Table Deals</Text>
             <Text style={styles.bannerDesc}>Get up to 20% off on newly harvested organic tomatoes and potatoes today!</Text>
-            <TouchableOpacity 
-              style={styles.bannerBtn} 
+            <TouchableOpacity
+              style={styles.bannerBtn}
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Market')}
             >

@@ -102,6 +102,9 @@ export default function ConsumerProfileScreen({ navigation }) {
       <SettingsList
         items={consumerSettingsItems}
         themeColors={themeColors}
+        onPressItem={(key) => {
+           if (key === 'myOrders') navigation.navigate('ConsumerOrders');
+        }}
       />
 
       <View style={styles.logoutWrapper}>

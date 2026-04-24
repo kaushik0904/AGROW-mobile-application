@@ -159,6 +159,12 @@ import EditFarmerProfileScreen from './src/pages/profile/farmer/EditFarmerProfil
 import PublicProfileScreen from './src/pages/profile/PublicProfileScreen';
 import AiChatScreen from './src/pages/insights/farmer/AiChatScreen';
 import ProductDetailsScreen from './src/pages/market/consumer/ProductDetailsScreen';
+import HubDiscoveryScreen from './src/pages/market/consumer/HubDiscoveryScreen';
+import HubDetailsScreen from './src/pages/market/consumer/HubDetailsScreen';
+import PaymentRequiredScreen from './src/pages/market/consumer/PaymentRequiredScreen';
+import CreateHubScreen from './src/pages/market/consumer/CreateHubScreen';
+import FarmerOrdersScreen from './src/pages/profile/farmer/FarmerOrdersScreen';
+import ConsumerOrdersScreen from './src/pages/profile/consumer/ConsumerOrdersScreen';
 
 const RootStackNav = createNativeStackNavigator();
 
@@ -171,6 +177,12 @@ function RootStack() {
       <RootStackNav.Screen name="PublicProfile" component={PublicProfileScreen} />
       <RootStackNav.Screen name="AiChatScreen" component={AiChatScreen} />
       <RootStackNav.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <RootStackNav.Screen name="HubDiscovery" component={HubDiscoveryScreen} />
+      <RootStackNav.Screen name="HubDetails" component={HubDetailsScreen} />
+      <RootStackNav.Screen name="CreateHub" component={CreateHubScreen} />
+      <RootStackNav.Screen name="PaymentRequired" component={PaymentRequiredScreen} />
+      <RootStackNav.Screen name="FarmerOrders" component={FarmerOrdersScreen} />
+      <RootStackNav.Screen name="ConsumerOrders" component={ConsumerOrdersScreen} />
     </RootStackNav.Navigator>
   );
 }

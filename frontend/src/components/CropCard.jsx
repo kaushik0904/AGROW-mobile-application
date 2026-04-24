@@ -17,9 +17,15 @@ export default function CropCard({ crop, onEdit, onRemove, isOwner }) {
           <Text style={[styles.name, { color: themeColors.primaryDark }]}>{crop.variety ? `${crop.variety} ${crop.crop_type}` : crop.crop_type}</Text>
           <Text style={[styles.farmer, { color: themeColors.primary }]}>By: {crop.farmer_name}</Text>
           <Text style={styles.detail}>
-            Listed: <Text style={styles.bold}>{crop.quantity} kg</Text> |{' '}
-            <Text style={[styles.price, { color: themeColors.primary }]}>₹{crop.price_per_kg}/kg</Text>
+            Listed: <Text style={styles.bold}>{crop.quantity} kg</Text>
           </Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceNormal}>Single: ₹{crop.price_per_kg}/kg</Text>
+            <View style={[styles.hubBadge, { backgroundColor: themeColors.primary100 }]}>
+              <Ionicons name="people" size={10} color={themeColors.primaryDark} />
+              <Text style={[styles.hubPrice, { color: themeColors.primaryDark }]}> Hub: ₹{Math.floor(crop.price_per_kg * 0.85)}/kg</Text>
+            </View>
+          </View>
           <View style={styles.expiryRow}>
             <Ionicons name="calendar-outline" size={12} color={colors.textMuted} />
             <Text style={styles.expiry}>Harvest: {crop.harvest_date || 'N/A'}</Text>
@@ -67,7 +73,10 @@ const styles = StyleSheet.create({
   farmer: { fontSize: 11, color: colors.primary, fontFamily: fonts.bodyMedium, marginTop: 1 },
   detail: { fontSize: 12, color: colors.textSecondary, marginTop: 4 },
   bold: { fontFamily: fonts.bodyMedium, color: colors.textPrimary },
-  price: { fontFamily: fonts.bodySemiBold, color: colors.primary },
+  priceRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  priceNormal: { fontSize: 13, fontFamily: fonts.bodyMedium, color: colors.textSecondary },
+  hubBadge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
+  hubPrice: { fontSize: 12, fontFamily: fonts.headingSemiBold },
   expiryRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   expiry: { fontSize: 11, color: colors.textMuted },
   actions: { gap: 8, alignItems: 'center' },

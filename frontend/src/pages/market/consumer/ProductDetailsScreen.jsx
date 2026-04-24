@@ -69,6 +69,18 @@ export default function ProductDetailsScreen() {
         </View>
 
         <View style={styles.detailsContainer}>
+          {product.is_hub_enabled && (
+             <View style={styles.hubBanner}>
+                <View style={styles.hubBannerHeader}>
+                   <Ionicons name="people" size={18} color={colors.white} />
+                   <Text style={styles.hubBannerTitle}>Group Buy Available</Text>
+                </View>
+                <Text style={styles.hubBannerText}>
+                   Start a hub and get an order of at least {product.hub_target_kg} kg collectively to unlock a {product.hub_discount_percentage}% discount!
+                </Text>
+             </View>
+          )}
+
           <View style={styles.titleRow}>
             <View>
               <Text style={styles.title}>{product.variety ? `${product.variety} ${product.crop_type}` : product.crop_type}</Text>
@@ -122,9 +134,23 @@ export default function ProductDetailsScreen() {
       </ScrollView>
 
       <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, 20) }, shadows.card]}>
-        <Button onPress={handleAddToCart} icon={<Ionicons name="cart" size={20} color={colors.white} />}>
-          Add to Cart
-        </Button>
+        {product.is_hub_enabled ? (
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+             <TouchableOpacity 
+                style={[styles.outlineBtn, { flex: 1 }]} 
+                onPress={handleAddToCart}
+             >
+                <Text style={styles.outlineBtnText}>Add to Cart</Text>
+             </TouchableOpacity>
+             <View style={{ flex: 1 }}>
+                <Button onPress={() => navigation.navigate('CreateHub', { product })}>Start Hub</Button>
+             </View>
+          </View>
+        ) : (
+          <Button onPress={handleAddToCart} icon={<Ionicons name="cart" size={20} color={colors.white} />}>
+            Add to Cart
+          </Button>
+        )}
       </View>
     </View>
   );
@@ -157,4 +183,10 @@ const styles = StyleSheet.create({
   qtyText: { fontSize: 16, fontFamily: fonts.headingSemiBold, color: colors.textPrimary, paddingHorizontal: 20 },
   totalPreview: { fontSize: 14, fontFamily: fonts.bodySemiBold, color: colors.textSecondary, marginTop: 12 },
   bottomBar: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: colors.white, paddingHorizontal: 24, paddingTop: 16, borderTopWidth: 1, borderTopColor: colors.borderLight },
+  hubBanner: { backgroundColor: consumerColors.primary, borderRadius: 12, padding: 12, marginBottom: 16 },
+  hubBannerHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
+  hubBannerTitle: { color: colors.white, fontFamily: fonts.headingSemiBold, fontSize: 14 },
+  hubBannerText: { color: 'rgba(255,255,255,0.9)', fontFamily: fonts.bodyMedium, fontSize: 13, lineHeight: 18 },
+  outlineBtn: { borderWidth: 1, borderColor: consumerColors.primary, borderRadius: 12, alignItems: 'center', justifyContent: 'center', paddingVertical: 14 },
+  outlineBtnText: { color: consumerColors.primary, fontFamily: fonts.headingSemiBold, fontSize: 16 },
 });

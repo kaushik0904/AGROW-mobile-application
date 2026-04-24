@@ -41,12 +41,30 @@ export default function CartScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        clearCart();
-        Alert.alert(
-          'Order Placed!',
-          'Your order has been successfully placed. You can check the status in your Profile.',
-          [{ text: 'Great', onPress: () => navigation.navigate('Home') }]
-        );
+        // Simulate Escrow Payment
+        const payRes = await fetch(`${API_URL}/payment/create-intent`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            amount: finalTotal,
+            type: 'ORDER',
+            reference_id: data.orderId
+          })
+        });
+
+        if (payRes.ok) {
+          clearCart();
+          Alert.alert(
+            'Payment Successful!',
+            'Your order has been placed and payment is securely held in Escrow. You can track it in your Profile.',
+            [{ text: 'Great', onPress: () => navigation.navigate('Home') }]
+          );
+        } else {
+          Alert.alert('Payment Failed', 'Order was created but mock payment failed.');
+        }
       } else {
         Alert.alert('Checkout Failed', data.error || 'Something went wrong.');
       }

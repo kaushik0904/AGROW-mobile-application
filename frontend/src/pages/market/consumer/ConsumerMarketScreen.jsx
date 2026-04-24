@@ -61,6 +61,24 @@ export default function ConsumerMarketScreen() {
         <Text style={styles.title}>Marketplace</Text>
       </View>
 
+      <View style={styles.hubBannerContainer}>
+         <View style={[styles.hubBanner, shadows.soft]}>
+            <View style={styles.hubBannerLeft}>
+               <Ionicons name="people-circle" size={32} color={colors.white} />
+               <View>
+                  <Text style={styles.hubBannerTitle}>Group Buying Hubs</Text>
+                  <Text style={styles.hubBannerSub}>Join forces, unlock wholesale prices!</Text>
+               </View>
+            </View>
+            <TouchableOpacity 
+               style={styles.hubBannerBtn}
+               onPress={() => navigation.navigate('HubDiscovery')}
+            >
+               <Text style={styles.hubBannerBtnText}>View Hubs</Text>
+            </TouchableOpacity>
+         </View>
+      </View>
+
       <View style={styles.searchContainer}>
         <Ionicons name="search-outline" size={20} color={colors.textMuted} style={styles.searchIcon} />
         <TextInput
@@ -113,6 +131,13 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.surface },
   header: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 10 },
   title: { fontSize: 24, fontFamily: fonts.heading, color: consumerColors.primaryDark },
+  hubBannerContainer: { paddingHorizontal: 20, marginBottom: 15, zIndex: 10 },
+  hubBanner: { backgroundColor: consumerColors.primary, borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  hubBannerLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
+  hubBannerTitle: { fontSize: 16, fontFamily: fonts.headingBold, color: colors.white },
+  hubBannerSub: { fontSize: 11, fontFamily: fonts.bodyMedium, color: colors.primary50, marginTop: 2, paddingRight: 10 },
+  hubBannerBtn: { backgroundColor: colors.white, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20 },
+  hubBannerBtnText: { fontSize: 12, fontFamily: fonts.headingSemiBold, color: consumerColors.primaryDark },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',

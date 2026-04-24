@@ -13,6 +13,7 @@ import SettingsList from '../components/SettingsList';
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const farmerSettingsItems = [
+  { label: 'Manage Orders', icon: 'cube-outline', key: 'manageOrders', type: 'link' },
   { label: 'Notifications', icon: 'notifications-outline', key: 'notifications', defaultOn: true },
   { label: 'Price Alerts', icon: 'trending-up-outline', key: 'priceAlerts', defaultOn: true },
   { label: 'Share Profile', icon: 'share-social-outline', key: 'shareProfile', defaultOn: false },
@@ -110,6 +111,9 @@ export default function FarmerProfileScreen({ navigation }) {
         toggles={toggles}
         onToggle={handleToggle}
         themeColors={themeColors}
+        onPressItem={(key) => {
+           if (key === 'manageOrders') navigation.navigate('FarmerOrders');
+        }}
       />
 
       <View style={styles.logoutWrapper}>

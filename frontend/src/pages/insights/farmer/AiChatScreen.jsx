@@ -3,8 +3,12 @@ import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Keyboa
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts, shadows } from '../../../common/theme';
+import { useAuth } from '../../../context/AuthContext';
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export default function AiChatScreen({ route, navigation }) {
+  const { token } = useAuth();
   const insets = useSafeAreaInsets();
   const contextData = route.params?.contextData || 'How can I assist you with your farm today?';
   const imageUri = route.params?.imageUri || null;
@@ -20,21 +24,32 @@ export default function AiChatScreen({ route, navigation }) {
   const [messages, setMessages] = useState(initialMessages);
   const [inputText, setInputText] = useState('');
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!inputText.trim()) return;
     
-    // Add user message
     const userMsg = { id: Date.now(), sender: 'user', text: inputText };
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
 
-    // Mock AI response
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev, 
-        { id: Date.now() + 1, sender: 'ai', text: "I'm analyzing your request based on the current market data and your crop profile. One moment please..." }
-      ]);
-    }, 1000);
+    try {
+      const response = await fetch(`${API_URL}/ai/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message: inputText, image_url: imageUri })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'ai', text: data.reply }]);
+      } else {
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'ai', text: 'Sorry, I am having trouble connecting right now.' }]);
+      }
+    } catch (error) {
+      console.error('AI chat error:', error);
+      setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'ai', text: 'Error connecting to the AI brain. Try again later.' }]);
+    }
   };
 
   return (
